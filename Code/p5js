@@ -1,0 +1,107 @@
+var rvalue = 255;
+var gvalue = 255;
+var bvalue = 255;
+var lightOn = false;
+var buttonPressed = false;
+var budy = 200;
+var wirey = 150;
+var radius = 20;
+var firstPhase = true;
+var secondPhase = false;
+var d;
+var insertBud = false;
+var speakery = 240;
+
+function preload(){
+	soundFormats('mp3');
+	
+	alarm = loadSound('alarm.mp3');
+}
+
+function setup() {
+	createCanvas(500, 500);
+	noStroke();
+	alarm.setVolume(0.1);
+}
+
+function draw() {
+	background(100);
+	d = dist(mouseX, mouseY, 190, budy);
+	
+	//Earbud Wire
+	fill("black")
+	rect(195, wirey, 5, 50)
+	
+	//Earbud
+	fill("white");
+	ellipse(200, budy, 20);
+	rect(190, budy, 10, 30);
+	
+	//Cap
+	fill("black");
+	arc(225, 250, 250, 250, PI, TWO_PI);
+	rect(300, 240, 150, 10);
+	
+	//Front of Cap
+	fill(rvalue, gvalue, bvalue);
+	arc(250, 240, 200, 225, PI + HALF_PI, TWO_PI);
+	
+	//Speaker
+	fill("lightgrey")
+	arc(400, speakery, 50, 10, PI, TWO_PI);
+	
+	//Button Press Check
+	if(buttonPressed){
+		budMove();
+		firstPhase = false;
+		secondPhase = true;
+	}
+	
+	//Checks for the y value of earbug to activate color change
+	if(budy >= 300){
+		colorChange();
+	}
+	
+	if(secondPhase){
+		insertBud = true;
+	}
+}
+
+function keyPressed(){
+	if(firstPhase){
+		if(key == "z"){
+			buttonPressed = true;
+		}
+	}
+}
+
+function mouseClicked(){
+	if(insertBud && d <= radius){
+		alarm.loop();
+		buttonPressed = false;
+		secondPhase = false;
+		insertBud = false;
+	}
+	else{
+		alarm.stop();
+		insertBud = true;
+	}
+}
+
+//Color Randomizer
+function colorChange(){
+	frameRate(5);
+	for(i = 0; i < 400; i++){
+		rvalue = random(0, 255);
+		gvalue = random(0, 255);
+		bvalue = random(0, 255);
+	}
+}
+
+//Moves Earbud
+function budMove(){
+	if(budy < 300){
+		budy += 10;
+		wirey += 10;
+	}
+}
